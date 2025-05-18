@@ -13,9 +13,10 @@ const SignScheme = new mongoose.Schema({
         type: String,
         required: true
     },
-    basketShopping: {
+    basketShopping: [{
         type: mongoose.Schema.Types.ObjectId,
-    },
+        ref: "Product"
+    }], 
     ref: {
         type: String,
         default: "User"
