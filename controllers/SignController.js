@@ -38,12 +38,12 @@ router.post('/register', async(req, res, next) => {
     try {
         const user = await User.findOne({ username });
             if(!user) {
-                res.json({ msg: "Invalid username or password!", status: false});
+                res.json({ msg: "Invalid username!", status: false});
             };
 
         const isPasswordValid = await bcrypt.compare( password, user.password );
             if(!isPasswordValid) {
-                res.json({ msg: "Invalid username or password!", status: false});
+                res.json({ msg: "Invalid password!", status: false});
             };
 
             return res.json({ status: true, obj: user });

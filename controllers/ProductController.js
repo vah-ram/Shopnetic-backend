@@ -56,4 +56,38 @@ router.post('/addProduct', async(req, res, next) => {
     }
   });
 
+  router.get('/getBasketProducts', async (req, res, next) => { 
+    
+    const { myId } = req.query;
+    
+    try {
+      const user = await User.findById(myId);
+
+      if(user) {
+        const arr = await Promise.all(
+          user.basketShopping.map(item => Product.findById(item)
+        ));
+
+        return res.json({ arr: arr.reverse() })
+      }
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.delete('/deleteBasketProduct', async(req, res, next) => {
+    const { myId, productId } = req.query
+
+    try {
+      const item = await User.findById(myId);
+
+      if(item) {
+        item.basketShopping = item.basketShopping.filter((item) => item.toString() !== productId)
+        await item.save()
+      }
+    } catch(err) {
+      next(err)
+    }
+  });
+
 export default router;
