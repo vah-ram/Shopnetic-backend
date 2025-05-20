@@ -64,11 +64,13 @@ router.post('/addProduct', async(req, res, next) => {
       const user = await User.findById(myId);
 
       if(user) {
-        const arr = await Promise.all(
-          user.basketShopping.map(item => Product.findById(item)
-        ));
-
-        return res.json({ arr: arr.reverse() })
+        const arr = (
+          await Promise.all(
+            user.basketShopping.map(item => Product.findById(item))
+          )
+        ).filter(Boolean);
+        
+        return res.json({ arr: arr.reverse() });        
       }
     } catch (err) {
       next(err);
@@ -85,6 +87,75 @@ router.post('/addProduct', async(req, res, next) => {
         item.basketShopping = item.basketShopping.filter((item) => item.toString() !== productId)
         await item.save()
       }
+    } catch(err) {
+      next(err)
+    }
+  });
+
+  router.get('/getCatalog', async (req, res, next) => {
+    const { articleId } = req.query;
+  
+    try {
+      const catalog = await Product.findOne( { article: articleId } );
+  
+      if(catalog) {
+        return res.json({ catalog });
+      }
+  
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.post('/addFavorite', async(req, res, next) => {
+    const { productId, myId } = req.body;
+
+    try {
+      const user = await User.findById(myId);
+
+      if(!user.favorites.includes(productId)) {
+        user.favorites.push(productId);
+        await user.save();
+
+        return res.json({ favorites: user.favorites });
+      };
+    } catch(err) {
+      next(err)
+    }
+  });
+
+  router.delete('/deleteFavorite', async(req, res, next) => {
+    const { productId, myId } = req.query;
+
+    try {
+      const user = await User.findById(myId);
+
+      if(user && user.favorites.includes(productId)) {
+
+        user.favorites = user.favorites.filter((item) => {
+          item.toString() !== productId
+        })
+
+        await user.save();
+
+        return res.json({ favorites: user.favorites });
+      } else {
+        return res.json("That product is not available!")
+      }
+    } catch(err) {
+      next(err)
+    }
+  });
+
+  router.get('/getFavorite', async(req, res, next) => {
+    const { myId } = req.query;
+
+    try {
+      const user = await User.findById(myId);
+
+      if(user) {
+        return res.json({ favorites: user.favorites });
+      };
     } catch(err) {
       next(err)
     }

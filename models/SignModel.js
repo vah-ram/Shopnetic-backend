@@ -17,6 +17,10 @@ const SignScheme = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
     }], 
+    favorites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Favorite"
+    }],
     ref: {
         type: String,
         default: "User"
