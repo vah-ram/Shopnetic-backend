@@ -6,14 +6,15 @@ const router = express.Router();
 
 router.post('/addProduct', async(req, res, next) => {
     
-    const { categoryTitle, title, price, images } = req.body;
+    const { categoryTitle, title, price, images, articleCode } = req.body;
     
     try {
         const product = await Product.create({
           categoryName: categoryTitle,
           title: title,
           price: price,
-          images
+          images: images,
+          article: articleCode
         });
 
         if(product) {
@@ -70,7 +71,11 @@ router.post('/addProduct', async(req, res, next) => {
           )
         ).filter(Boolean);
         
-        return res.json({ arr: arr.reverse() });        
+        if(arr) {
+          res.json({ arr: arr.reverse() });
+        } else {
+          return false;
+        }     
       }
     } catch (err) {
       next(err);
