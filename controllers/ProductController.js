@@ -112,6 +112,21 @@ router.post('/addProduct', async(req, res, next) => {
     }
   });
 
+  router.get('/getSimiliarProducts', async (req, res, next) => {
+    const { similiarName } = req.query;
+  
+    try {
+      const catalogs = await Product.find({categoryName: similiarName});
+  
+      if(catalogs) {
+        return res.json({ catalogs });
+      }
+  
+    } catch (err) {
+      next(err);
+    }
+  });
+
   router.post('/addFavorite', async(req, res, next) => {
     const { productId, myId } = req.body;
 
