@@ -20,7 +20,7 @@ const server = http.createServer(app);
 
 const io = new Server( server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://shopnetic-free.free.nf",
         methods: ['GET', 'POST']
     }
 });
