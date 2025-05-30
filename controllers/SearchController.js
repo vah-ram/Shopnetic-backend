@@ -1,46 +1,23 @@
-import { Todo } from '../models/To-do-Model.js';
+import { Product } from "../models/ProductModel.js";
 import express from 'express';
 const router = express.Router();
 
-router.post('/toDoAdd', async( req,res,next ) => {
-    const { text, author } = req.body;
+router.get('/searchresults', async( req, res, next ) => {
+    const { searchResult } = req.query;
 
     try {
-        await Todo.create({ text: text, author: author });
+        const products = await Product.find({
+            title: { $regex: `^${searchResult}`, $options: 'i' }
+        });
 
-        const result = await Todo.find();
+        const AllCategories = await Product.find();
+        AllCategories.sort(() => Math.random() - 0.5 );
 
-        if(result) {
-            return res.json({ result: result.reverse() })
+        if(products.length > 0) {
+            return res.json( { products: products } );
+        }else {
+            return res.json( { products: AllCategories, text: "К сожалению, товаров с таким названием нет." } );
         }
-    } catch(err) {
-        next(err)
-    }
-});
-
-router.get('/toDoGet', async( req,res,next ) => {
-    const { author } = req.query;
-
-    try {
-        const result = await Todo.find({ author: author });
-
-        if(result) {
-            return res.json({ result: result.reverse()})
-        }
-    } catch(err) {
-        next(err)
-    }
-});
-
-router.delete('/toDoRemove', async( req,res,next ) => {
-    const { todoId } = req.query;
-
-    try {
-        const result = await Todo.findByIdAndDelete(todoId);
-
-        if(result) {
-            res.json({ status: true, msg: 'All is ok'});
-        };
     } catch(err) {
         next(err)
     }

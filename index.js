@@ -6,19 +6,21 @@ import { Server } from 'socket.io';
 import http from 'http'
 import SignRouter from './controllers/SignController.js'
 import ProductRouter from './controllers/ProductController.js'
+import TodoRouter from './controllers/TodoController.js'
 import SearchRouter from './controllers/SearchController.js'
 
 app.use(express.json());
 app.use(cors());
 app.use('/api/auth', SignRouter);
 app.use('/api/product', ProductRouter);
-app.use('/api/todo', SearchRouter);
+app.use('/api/todo', TodoRouter);
+app.use('/search', SearchRouter);
 
 const server = http.createServer(app);
 
 const io = new Server( server, {
     cors: {
-        origin: "https://shopnetic-free.free.nf",
+        origin: "http://localhost:3000",
         methods: ['GET', 'POST']
     }
 });

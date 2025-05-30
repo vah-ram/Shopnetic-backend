@@ -34,6 +34,7 @@ router.post('/addProduct', async(req, res, next) => {
     try {
       const filter = name ? { categoryName: name } : {};
       const result = await Product.find(filter);
+      result.sort(() => Math.random() - 0.5 );
   
       return res.json({ result });
   
@@ -66,10 +67,11 @@ router.post('/addProduct', async(req, res, next) => {
 
       if(user) {
         const arr = (
-          await Promise.all(
-            user.basketShopping.map(item => Product.findById(item))
-          )
-        ).filter(Boolean);
+        await Promise.all(
+          user.basketShopping.map(item => Product.findById(item))
+        )
+      ).filter(Boolean);
+
         
         if(arr) {
           res.json({ arr: arr.reverse() });
@@ -113,13 +115,17 @@ router.post('/addProduct', async(req, res, next) => {
   });
 
   router.get('/getSimiliarProducts', async (req, res, next) => {
-    const { similiarName } = req.query;
-  
+    const { similiarName, catalogId } = req.query;
+
     try {
       const catalogs = await Product.find({categoryName: similiarName});
-  
-      if(catalogs) {
-        return res.json({ catalogs });
+      const filtered = catalogs.filter((item) => {
+        return item._id.toString() !== catalogId.toString()
+      });
+      filtered.sort(() => Math.random() - 0.5 );
+
+      if(filtered) {
+        return res.json({ catalogs: filtered });
       }
   
     } catch (err) {
