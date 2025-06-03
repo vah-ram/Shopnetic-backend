@@ -1,20 +1,31 @@
 import { Product } from "../models/ProductModel.js";
 import { User } from "../models/SignModel.js";
 import express from 'express';
+import { customAlphabet } from 'nanoid'
 
 const router = express.Router();
 
 router.post('/addProduct', async(req, res, next) => {
     
-    const { categoryTitle, title, price, images, articleCode } = req.body;
+    const { categoryTitle, title, price, images } = req.body;
     
+    const generateNumericCode = customAlphabet('0123456789', 12);
+    const randomCode = generateNumericCode();
+
     try {
+        const hasArticle = await Product.findOne({ article: randomCode  });
+
+        while(hasArticle) {
+          randomCode = generateNumericCode();
+          hasArticle = await Product.findOne({ article: randomCode  });
+        };
+
         const product = await Product.create({
           categoryName: categoryTitle,
           title: title,
           price: price,
           images: images,
-          article: articleCode
+          article: randomCode
         });
 
         if(product) {
@@ -71,7 +82,6 @@ router.post('/addProduct', async(req, res, next) => {
           user.basketShopping.map(item => Product.findById(item))
         )
       ).filter(Boolean);
-
         
         if(arr) {
           res.json({ arr: arr.reverse() });
@@ -83,6 +93,31 @@ router.post('/addProduct', async(req, res, next) => {
       next(err);
     }
   });
+
+    router.get('/getBasketPrices', async (req, res, next) => { 
+      
+      const { myId } = req.query;
+      
+      try {
+        const user = await User.findById(myId);
+
+        if(user) {
+          const products = (
+            await Promise.all(
+              user.basketShopping.map(item => Product.findById(item))
+            )
+          ).filter(Boolean);
+
+          const productsPrices = products.reduce((sum, item) => 
+            sum + item.price, 0
+          );
+          
+          return res.json({ productsPrices }); 
+        }
+      } catch (err) {
+        next(err);
+      }
+    });
 
   router.delete('/deleteBasketProduct', async(req, res, next) => {
     const { myId, productId } = req.query

@@ -7,9 +7,9 @@
     "start": "node index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Vahram FullStack-Developer",
   "license": "ISC",
-  "description": "",
+  "description": "This is a shop web page.",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
