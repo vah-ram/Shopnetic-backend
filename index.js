@@ -20,7 +20,7 @@ const server = http.createServer(app);
 
 const io = new Server( server, {
     cors: {
-        origin: "https://shopnetic-free.free.nf",
+        origin: "http://shopnetic.wuaze.com",
         methods: ['GET', 'POST']
     }
 });
@@ -28,11 +28,9 @@ const io = new Server( server, {
 // io.on("connection", (socket) => {
 // });
 
-mongoose.connect('mongodb+srv://Vahram:vahram12345@cluster0.powdqsm.mongodb.net/Shopnetic').then(() => {
-    console.log("MongoDb Connected!")
-}).catch((err) => {
-    console.log(err);
-});
+mongoose.connect('mongodb+srv://Vahram:vahram12345@cluster0.powdqsm.mongodb.net/Shopnetic')
+    .then(() => console.log("✅ MongoDB Connected"))
+    .catch(err => console.error("❌ MongoDB connection error:", err));
 
 server.listen(5000, () => {
     console.log("Server is listening!")

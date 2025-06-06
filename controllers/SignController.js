@@ -1,7 +1,8 @@
 import { User } from "../models/SignModel.js";
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { customAlphabet } from "nanoid"
+import QrCode from 'qrcode';
+import { customAlphabet } from "nanoid";
 
 const router = express.Router();
 
@@ -33,7 +34,8 @@ router.post('/register', async(req, res, next) => {
             username: username,
             email: email,
             password: hashedPassword,
-            shoppingId: randomId
+            shoppingId: randomId,
+            shoppingQr: await QrCode.toDataURL(randomId)
         });
 
            return res.json({ status: true, obj: user });

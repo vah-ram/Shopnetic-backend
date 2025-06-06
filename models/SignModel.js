@@ -17,6 +17,10 @@ const SignScheme = new mongoose.Schema({
         type: String,
         required: true
     },
+    shoppingQr: {
+        type: String,
+        required: true
+    },
     basketShopping: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
