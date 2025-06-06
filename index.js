@@ -20,7 +20,7 @@ const server = http.createServer(app);
 
 const io = new Server( server, {
     cors: {
-        origin: "http://shopnetic.wuaze.com",
+        origin: "https://shopnetic.wuaze.com",
         methods: ['GET', 'POST']
     }
 });
