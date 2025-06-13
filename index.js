@@ -22,7 +22,7 @@ const server = http.createServer(app);
 
 const io = new Server( server, {
     cors: {
-        origin: process.env.FrontEnd_Port,
+        origin: "https://shopnetic-frontend-ty1d.vercel.app",
         methods: ['GET', 'POST']
     }
 });
